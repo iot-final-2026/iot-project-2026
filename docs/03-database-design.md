@@ -1,6 +1,6 @@
 # 1. 데이터베이스 설계
 
-![alt text](Key.png)
+![alt text](DB-ERD.png)
 - [ERDCloud](https://www.erdcloud.com/d/NaM6PQ2LibNW8kbbX)
 
 ## 1.1 시스템 구성 개요
