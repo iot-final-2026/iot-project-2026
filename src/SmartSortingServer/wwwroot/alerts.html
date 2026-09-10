@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알람/이상 내역</title>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>자동 분류 및 작업자 포장 알림 시스템</h1>
+
+      <div class="admin-dropdown">
+        <button type="button" id="adminMenuButton" class="admin-menu">
+          <svg class="admin-avatar" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="14" fill="currentColor"/><circle cx="14" cy="10" r="4" fill="#fff"/><path d="M6 23a8 8 0 0 1 16 0Z" fill="#fff"/></svg>
+          <span id="adminName">관리자</span>
+          <i data-lucide="chevron-down" class="admin-chevron" aria-hidden="true"></i>
+        </button>
+
+        <div id="adminDropdownMenu" class="admin-dropdown-menu">
+          <button type="button" id="logoutMenuButton" class="admin-dropdown-item">
+            <i data-lucide="log-out"></i>
+            <span>로그아웃</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item">
+          <i data-lucide="house"></i>
+          <span>대시보드</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <i data-lucide="image"></i>
+          <span>제품 이미지</span>
+        </a>
+        <a href="alerts.html" class="nav-item active">
+          <i data-lucide="triangle-alert"></i>
+          <span>알람/이상 내역</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content alerts-page">
+      <section class="page-toolbar panel">
+        <div class="page-title-group">
+          <h2>알람/이상 내역</h2>
+        </div>
+
+        <div class="toolbar-controls">
+          <div class="filter-group">
+            <div class="segmented-control">
+              <button type="button" class="segment active" data-alert-filter="ALL">전체</button>
+              <button type="button" class="segment" data-alert-filter="UNCHECKED">미확인</button>
+              <button type="button" class="segment" data-alert-filter="NOT_RECOVERED">미복구</button>
+              <button type="button" class="segment" data-alert-filter="RECOVERED">복구완료</button>
+            </div>
+          </div>
+
+          <div class="filter-group search-group">
+            <div class="input-with-icon">
+              <i data-lucide="search"></i>
+              <input id="alertSearch" type="search" placeholder="장비명 또는 알림 내용">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="alert-count-strip">
+        <span>오늘 발생 <strong id="todayAlertCount">0</strong></span>
+        <span>미확인 <strong id="uncheckedAlertCount">0</strong></span>
+        <span>미복구 <strong id="unrecoveredAlertCount">0</strong></span>
+      </section>
+
+      <section class="alerts-layout">
+        <article class="panel alert-table-panel">
+          <div class="panel-header">
+            <h2>이상 내역 목록</h2>
+            <span id="alertResultCount" class="result-count">0건</span>
+          </div>
+
+          <div id="alertTable" class="alert-table" aria-live="polite">
+            <div class="alert-row alert-row-head">
+              <span>상태</span>
+              <span>장비</span>
+              <span>내용</span>
+              <span>발생 시간</span>
+              <span>처리</span>
+            </div>
+          </div>
+          <div class="alert-pagination" aria-label="알림 페이지 이동">
+            <button id="alertPrevPage" type="button" class="pagination-button">이전</button>
+            <span id="alertPageInfo">1 / 1</span>
+            <button id="alertNextPage" type="button" class="pagination-button">다음</button>
+          </div>
+        </article>
+
+        <aside class="panel alert-detail-panel">
+          <div class="panel-header">
+            <h2>알림 상세</h2>
+            <span id="alertDetailPriority" class="status-pill info">-</span>
+          </div>
+
+          <div id="alertDetailMessage" class="alert-detail-message">
+            목록에서 알림을 선택해 주세요.
+          </div>
+
+          <dl class="detail-list">
+            <div>
+              <dt>alertId</dt>
+              <dd id="alertDetailId">-</dd>
+            </div>
+            <div>
+              <dt>componentCode</dt>
+              <dd id="alertDetailComponent">-</dd>
+            </div>
+            <div id="alertDetailCheckRow">
+              <dt>checkStatus</dt>
+              <dd><span id="alertDetailCheck" class="status-pill info">-</span></dd>
+            </div>
+            <div id="alertDetailRecoveryRow">
+              <dt>recoveryStatus</dt>
+              <dd><span id="alertDetailRecovery" class="status-pill info">-</span></dd>
+            </div>
+            <div>
+              <dt>createdAt</dt>
+              <dd id="alertDetailCreatedAt">-</dd>
+            </div>
+            <div id="alertDetailCheckedAtRow">
+              <dt>checkedAt</dt>
+              <dd id="alertDetailCheckedAt">-</dd>
+            </div>
+            <div id="alertDetailRecoveredAtRow">
+              <dt>recoveredAt</dt>
+              <dd id="alertDetailRecoveredAt">-</dd>
+            </div>
+          </dl>
+
+          <div class="detail-actions">
+            <button type="button" id="checkAlertButton" class="modal-button secondary" disabled>확인 처리</button>
+            <button type="button" id="recoverAlertButton" class="modal-button danger" disabled>복구 처리</button>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div id="recoverModal" class="modal-overlay" hidden>
+    <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="recoverModalTitle" aria-describedby="recoverModalDescription">
+      <h2 id="recoverModalTitle">복구하시겠습니까?</h2>
+      <p id="recoverModalDescription">선택한 알림을 복구완료로 처리합니다.</p>
+
+      <div class="logout-modal-actions">
+        <button type="button" id="cancelRecoverButton" class="modal-button secondary">취소</button>
+        <button type="button" id="confirmRecoverButton" class="modal-button danger">복구</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="logoutModal" class="modal-overlay" hidden>
+    <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logoutModalTitle">
+      <h2 id="logoutModalTitle">로그아웃하시겠습니까?</h2>
+      <p>현재 관리자 세션을 종료하고<br> 로그인 화면으로 이동합니다.</p>
+
+      <div class="logout-modal-actions">
+        <button type="button" id="cancelLogoutButton" class="modal-button secondary">
+          취소
+        </button>
+        <button type="button" id="confirmLogoutButton" class="modal-button danger">
+          로그아웃
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/auth-ui.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/alerts-page.js"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script src="js/mqtt-client.js"></script>
+  <script>
+    if (!localStorage.getItem('accessToken')) {
+      window.location.href = 'login.html';
+    }
+    lucide.createIcons();
+  </script>
+</body>
+</html>
