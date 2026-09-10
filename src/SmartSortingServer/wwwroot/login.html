@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 로그인 화면</title>
+    
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <main class="login-page">
+        <section class="login-card">
+            <div class="login-logo">
+                <i data-lucide="scan-line"></i>
+            </div>
+
+            <header class="login-header">
+                <h1>관리자 로그인</h1>
+                <p>자동분류 및 포장 알림 시스템</p>
+            </header>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminId">ID</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user"></i>
+                        <input type="text"
+                            id="adminId"
+                            name="adminId"
+                            placeholder="아이디를 입력하세요"
+                            autocomplete="username"
+                    >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword">비밀번호</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock-keyhole"></i>
+                        <input type="password"
+                            id="adminPassword"
+                            name="adminPassword"
+                            placeholder="비밀번호를 입력하세요"
+                            autocomplete="current-password"
+                    >
+                    <button type="button"
+                            id="passwordToggle"
+                            class="password-toggle"
+                            aria-label="비밀번호 표시"
+                    >
+                        <i data-lucide="eye"></i>
+                    </button>
+                    </div>
+                </div>
+                
+                <p id="loginError" class="login-error" role="alert"></p>
+
+                <button type="submit" id="loginButton" class="login-button">
+                    로그인
+                </button>
+            </form>
+
+            
+            <p class="login-help">
+                로그인 문제가 발생 시 시스템 담당자에게 문의하세요.
+            </p>
+        </section>
+
+        <span class="version">v1.0.0</span>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/login.js"></script>
+    <script>
+    lucide.createIcons();
+    </script>
+</body>
+</html>
