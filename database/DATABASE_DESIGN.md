@@ -6,13 +6,24 @@
 
 ## 1. ERD
 
+### 데이터베이스 설계 ERD
+
 ![스마트 분류 시스템 ERD](./smart_sorting_system_erd.png)
+
+테이블의 역할과 주요 상태값을 함께 확인할 수 있도록 정리한 ERD입니다.
+
+### 실제 데이터베이스 ERD
+
+![DBeaver 실제 ERD](./smart_sorting_system_dbeaver_erd.png)
+
+실제 MySQL 데이터베이스에 생성된 테이블과 PK·FK 관계를 DBeaver에서 확인한 ERD입니다.
 
 관련 파일:
 
 - SQL 스키마: `smart_sorting_system.sql`
 - DBeaver 편집용 ERD: `smart_sorting_system.erd`
-- GitHub 열람용 ERD: `smart_sorting_system_erd.png`
+- 설명용 ERD: `smart_sorting_system_erd.png`
+- DBeaver 실제 DB ERD: `smart_sorting_system_dbeaver_erd.png`
 
 ---
 
