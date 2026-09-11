@@ -1926,4 +1926,4 @@ LED / 부저 확인
 
 프로젝트 최종 시연영상 링크를 아래에 추가한다.
 
-[시연영상 링크]
+https://github.com/user-attachments/assets/9cb9f355-9547-4d6d-a888-76241a733a27
