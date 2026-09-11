@@ -49,33 +49,15 @@
 
 ---
 
-### 1.4 개발 기간
-
-> 실제 개발 기간에 맞게 수정
-
-| 구분 | 기간 | 내용 |
-|------|------|------|
-| 프로젝트 기획 | YYYY.MM.DD ~ YYYY.MM.DD | 주제 선정 및 프로젝트 방향 설정 |
-| 요구사항 분석 | YYYY.MM.DD ~ YYYY.MM.DD | 기능 및 비기능 요구사항 정의 |
-| UI 설계 | YYYY.MM.DD ~ YYYY.MM.DD | 작업자 및 관리자 화면 설계 |
-| DB 설계 | YYYY.MM.DD ~ YYYY.MM.DD | ERD 및 데이터베이스 구조 설계 |
-| 개발환경 구축 | YYYY.MM.DD ~ YYYY.MM.DD | 개발 도구 및 장비 환경 구축 |
-| 기능 개발 | YYYY.MM.DD ~ YYYY.MM.DD | 센서, 서버, UI 및 분류 기능 개발 |
-| 통합 테스트 | YYYY.MM.DD ~ YYYY.MM.DD | 하드웨어 및 소프트웨어 통합 테스트 |
-| 최종 테스트 | YYYY.MM.DD ~ YYYY.MM.DD | 전체 시스템 검증 및 오류 수정 |
-
----
-
-### 1.5 팀원 및 역할
+### 1.4 팀원 및 역할
 
 | 이름 | 역할 | 담당 업무 |
 |------|------|-----------|
-| 이름 | 팀장 / 백엔드 | 서버 개발, API 설계, DB 연동, 프로젝트 관리 |
-| 이름 | 프론트엔드 | 작업자 UI, 관리자 웹 페이지 개발 |
-| 이름 | IoT / 하드웨어 | 센서, 컨베이어, 서보모터 및 장비 제어 |
-| 이름 | AI / 테스트 | 카메라 및 OpenCV 분류, 테스트 및 문서 작성 |
-
-> 팀원별 실제 담당 업무에 맞게 수정한다.
+| 하서영 | 팀장 / 시스템 통합 및 연동 | 시스템 전체 구조 설계, 통합 테스트 및 오류 수정 |
+| 김민주 | 프론트엔드 / 웹 | 관리자 웹 페이지 개발, 생산 현황 및 통계 화면 구현, 장비 상태 및 알림 화면 구현 |
+| 김채현 | 백엔드, 데이터베이스 | ASP.NET Core Backend 개발, REST API 구현, MySQL 데이터베이스 설계 및 연동, 생산·분류 데이터 관리 |
+| 박소영 | qt / 작업자 UI | 	Qt 기반 작업자 UI 개발, 생산량 및 목표량 표시, 장비 상태 및 알림 화면 구현 |
+| 한동현 | IoT / 하드웨어 | Arduino 및 Raspberry Pi 제어, 센서·카메라·컨베이어·서보모터 연동, LCD·LED·부저 제어 |
 
 ---
 
@@ -189,142 +171,508 @@
 
 ### 2.5 데이터베이스 설계
 
-본 시스템의 데이터베이스는 생산 작업을 중심으로 작업자, 제품, 제품 종류, 알림 및 시스템 구성요소를 연결하는 구조로 설계한다.
+본 프로젝트의 데이터베이스는 생산 목표, 작업자별 생산 작업, 개별 제품 감지 및 분류 결과, 시스템 구성요소 상태, 알림 이력을 관리하도록 설계하였다.
 
-![DB ERD](./docs/DB-ERD.png)
+MySQL을 사용하며, 생산 작업을 중심으로 각 데이터가 연결되도록 구성하였다.
 
-#### 주요 테이블
-
-| 테이블 | 설명 |
-|--------|------|
-| USERS | 작업자 및 관리자 계정 관리 |
-| PRODUCTION_SESSIONS | 생산 작업 및 생산량 관리 |
-| PRODUCTS | 개별 제품 및 분류 결과 관리 |
-| PRODUCT_TYPES | 초콜릿, 사탕 등의 제품 종류 관리 |
-| ALERTS | 오류 및 알림 기록 |
-| SYSTEM_COMPONENTS | 센서, 카메라, 컨베이어 등의 장비 상태 관리 |
-
----
-
-### 2.6 데이터 관계
+주요 테이블은 다음과 같다.
 
 ```text
-USERS
-  │
-  │ 1:N
-  ▼
-PRODUCTION_SESSIONS
-  │
-  ├──────── 1:N ────────> PRODUCTS
-  │                         │
-  │                         │ N:1
-  │                         ▼
-  │                    PRODUCT_TYPES
-  │
-  └──────── 1:N ────────> ALERTS
-                              ▲
-                 ┌────────────┼────────────┐
-                 │            │            │
-                 ▼            ▼            ▼
-              PRODUCTS      USERS    SYSTEM_COMPONENTS
-
-## 2.7 데이터베이스 설계
-
-본 프로젝트의 데이터베이스는 생산 작업을 중심으로 사용자, 제품, 제품 종류, 알림 및 시스템 구성요소 간의 관계를 관리하도록 설계하였다.
-
-### 2.7.1 ERD
-
-![데이터베이스 ERD](./docs/DB-ERD.png)
-
-### 2.7.2 주요 테이블
-
-| 테이블 | 설명 |
-|--------|------|
-| USERS | 작업자 및 관리자 계정 정보 관리 |
-| PRODUCTION_SESSIONS | 생산 작업 및 생산량 관리 |
-| PRODUCTS | 개별 제품의 분류 결과 및 이미지 관리 |
-| PRODUCT_TYPES | 초콜릿, 사탕 등의 제품 종류 관리 |
-| ALERTS | 시스템 오류 및 알림 내역 관리 |
-| SYSTEM_COMPONENTS | 센서, 카메라, 컨베이어 등 시스템 구성요소 관리 |
-
-### 2.7.3 데이터 흐름
-
-```text
-사용자 로그인
-    ↓
-생산 작업 시작
-    ↓
-PRODUCTION_SESSIONS 생성
-    ↓
-적외선 센서 제품 감지
-    ↓
-카메라 이미지 촬영
-    ↓
-OpenCV 기반 제품 분류
-    ↓
-PRODUCTS 데이터 저장
-    ↓
-생산량 집계
-    ↓
-목표 수량 도달 여부 확인
-    ↓
-박스 적재 완료
-    ↓
-서보모터 박스 배출
-    ↓
-LCD / LED / 부저 알림
-    ↓
-관리자 웹에 생산 현황 및 분류 결과 표시
+테이블	설명
+users	관리자 및 작업자 계정과 권한 관리
+product_types	초콜릿, 사탕 등 제품 유형 및 세트 구성 기준 관리
+system_components	센서, 카메라, 컨베이어 등 시스템 구성요소 상태 관리
+production_targets	하루 전체 생산 목표 및 작업 인원 관리
+production_sessions	작업자별 생산 작업 및 생산량 관리
+product_detections	개별 제품의 감지 및 분류 결과 관리
+alerts	생산 및 시스템에서 발생한 정보, 경고, 오류 이력 관리
 ```
 
-### 2.7.4 IoT 데이터 처리 흐름
+데이터베이스는 각 테이블이 독립적인 기본 키를 가지는 비식별 관계로 구성하였다.
+
+#### 2.5.1 ERD
+
+프로젝트의 데이터베이스 구조와 테이블 간 관계는 다음 ERD를 기준으로 설계하였다.
+
+실제 MySQL 데이터베이스에 생성된 테이블과 PK·FK 관계는 DBeaver를 이용하여 확인할 수 있다.
+
+관련 파일은 다음과 같다.
 
 ```text
-IoT 장비에서 제품이 감지되면 다음 순서로 데이터가 처리된다.
+smart_sorting_system.sql
+smart_sorting_system.erd
+smart_sorting_system_erd.png
+smart_sorting_system_dbeaver_erd.png
+```
 
+#### 2.5.2 테이블 구성
+
+users — 사용자
+관리자와 작업자의 로그인 정보 및 권한을 관리한다.
+
+```text
+컬럼	설명
+user_id	사용자 번호
+login_id	로그인 아이디
+password_hash	BCrypt 비밀번호 해시
+name	사용자명
+role	사용자 역할
+created_at	계정 생성 일시
+```
+
+주요 규칙은 다음과 같다.
+
+```text
+login_id
+→ UNIQUE
+
+role
+→ ADMIN
+→ WORKER
+```
+
+비밀번호는 평문으로 저장하지 않고 BCrypt 방식으로 해시하여 저장한다.
+
+##### product_types — 제품 유형
+
+초콜릿과 사탕 등의 제품 유형 및 세트 구성 기준을 관리한다.
+
+```text
+컬럼	설명
+product_type_id	제품 유형 번호
+product_type_code	API 및 MQTT 연동용 제품 코드
+product_name	제품명
+unit_per_set	한 세트를 구성하는 낱개 수
+created_at	생성 일시
+```
+
+초기 제품 유형은 다음과 같이 구성한다.
+
+```text
+제품 코드	제품명	세트당 개수
+CHOCOLATE	초콜릿	10
+CANDY	사탕	1
+```
+
+unit_per_set은 0보다 큰 값을 사용한다.
+
+제품 종류에 따른 세트 수량을 데이터베이스에서 관리하기 때문에 향후 다른 제품 유형이 추가되더라도 제품별 세트 구성 기준을 유연하게 변경할 수 있다.
+
+##### system_components — 시스템 구성요소
+
+시스템에서 사용하는 하드웨어 및 소프트웨어 구성요소의 현재 상태를 관리한다.
+
+```text
+컬럼	설명
+component_id	구성요소 번호
+component_code	API 및 MQTT 연동용 고정 코드
+component_name	구성요소 이름
+component_type	구성요소 유형
+current_status	현재 상태
+status_updated_at	상태 갱신 일시
+```
+
+구성요소 유형은 다음과 같다.
+
+```text
+SENSOR
+ACTUATOR
+CONTROLLER
+DISPLAY
+SOFTWARE
+SERVER
+DATABASE
+```
+
+현재 상태는 다음과 같이 관리한다.
+
+```text
+NORMAL  : 정상
+WARNING : 경고
+ERROR   : 오류
+OFFLINE : 연결 또는 통신 불가
+```
+
+주요 관리 대상은 다음과 같다.
+
+```text
+Raspberry Pi
+Arduino
+적외선 센서
+Camera
+Conveyor
+Servo Motor
+Buzzer
+작업자 WPF
+관리자 Web
+MQTT Broker
+ASP.NET Core Server
+MySQL Database
+```
+
+status_updated_at은 구성요소가 등록될 때 저장하며 장비 상태가 변경될 때 current_status와 함께 갱신한다.
+
+##### production_targets — 생산 목표
+
+하루 전체 생산 목표와 작업 인원 및 다음 날 적용할 예약 목표를 관리한다.
+
+```text
+컬럼	설명
+target_id	생산 목표 번호
+target_chocolate_set_count	현재 적용 중인 초콜릿 목표 세트 수
+target_candy_set_count	현재 적용 중인 사탕 목표 세트 수
+next_target_chocolate_set_count	다음 날 적용할 초콜릿 목표 세트 수
+next_target_candy_set_count	다음 날 적용할 사탕 목표 세트 수
+daily_worker_count	현재 적용 중인 하루 작업 인원
+next_daily_worker_count	다음 날 적용할 작업 인원
+updated_at	마지막 수정 일시
+```
+
+하루 전체 목표는 production_targets에서 관리하며, 작업자가 생산을 시작하면 daily_worker_count를 기준으로 각 생산 세션에 목표량을 분배한다.
+
+```text
+production_targets
+        ↓
+하루 전체 생산 목표
+        ↓
+작업 인원 기준 목표 분배
+        ↓
+production_sessions
+```
+
+생산이 이미 시작된 이후 관리자가 목표 또는 작업 인원을 변경하는 경우에는 next_* 컬럼에 값을 저장한다.
+
+다음 날 첫 생산 세션이 시작되면 예약된 next_* 값을 새로운 목표로 적용하고, 적용이 완료된 예약값은 NULL로 초기화한다.
+
+##### production_sessions — 생산 작업
+
+작업자 한 명이 수행하는 하나의 생산 작업 단위를 관리한다.
+
+```text
+컬럼	설명
+session_id	생산 작업 번호
+user_id	작업자 번호
+target_chocolate_set_count	해당 세션의 초콜릿 목표 세트 수
+target_candy_set_count	해당 세션의 사탕 목표 세트 수
+chocolate_count	생산된 초콜릿 낱개 수
+candy_count	생산된 사탕 낱개 수
+status	생산 작업 상태
+started_at	작업 시작 일시
+ended_at	작업 종료 일시
+updated_at	마지막 수정 일시
+```
+
+생산 작업 상태는 다음과 같이 관리한다.
+
+```text
+RUNNING   : 생산 진행 중
+PAUSED    : 일시 정지
+COMPLETED : 생산 완료
+CANCELLED : 생산 취소
+```
+
+주요 규칙은 다음과 같다.
+
+```text
+- 목표량과 생산량은 음수가 될 수 없다.
+
+- 생산 세션이 시작될 때 하루 전체 목표를 작업 인원 기준으로 분배하여 세션 목표를 저장한다.
+
+- RUNNING, PAUSED 상태에서는 작업이 종료되지 않은 상태로 관리한다.
+
+- COMPLETED, CANCELLED 상태에서는 작업 종료 시각을 기록한다.
+
+- 이전 날짜에 종료되지 않은 생산 세션은 새로운 생산 작업 시작 시 CANCELLED 처리한다.
+
+- 생산량은 실제 제품의 낱개 수를 기준으로 관리한다.
+
+chocolate_count
+→ 초콜릿 낱개 생산량
+
+candy_count
+→ 사탕 낱개 생산량
+
+- 세트 수는 제품 유형의 unit_per_set을 기준으로 계산한다.
+
+- 세트 수 = 생산 낱개 수 / unit_per_set
+```
+
+##### product_detections — 제품 감지 및 분류 결과
+
+제품이 감지되고 카메라 촬영 및 이미지 분류가 수행될 때마다 개별 감지 결과를 저장한다.
+
+```text
+컬럼	설명
+product_detection_id	제품 감지 번호
+session_id	생산 작업 번호
+product_type_id	제품 유형 번호
+confidence	분류 신뢰도
+image_path	촬영 이미지 경로
+classification_status	분류 상태
+detected_at	제품 감지 일시
+```
+
+분류 상태는 다음과 같다.
+
+```text
+SUCCESS : 분류 성공
+FAILED  : 분류 실패
+```
+
+제품 감지 데이터는 다음과 같은 흐름으로 저장된다.
+
+```text
+제품 감지
+   ↓
+카메라 촬영
+   ↓
+이미지 분류
+   ↓
+product_detections 저장
+```
+
+주요 규칙은 다음과 같다.
+
+```text
+- 제품 감지 결과는 생산 세션과 연결한다.
+- confidence는 0 이상 1 이하의 값을 사용한다.
+- SUCCESS인 경우 정상적으로 분류된 제품 유형을 저장한다.
+- FAILED인 경우 제품 유형을 특정할 수 없으므로 product_type_id가 NULL일 수 있다.
+- 이미지가 저장되지 않은 경우 image_path는 NULL일 수 있다.
+- 제품 분류 실패와 장비 오류는 서로 다른 개념으로 관리한다.
+- product_detections는 제품별 개별 생산 이력을 담당하고, production_sessions는 세션 단위 생산량 집계를 담당한다.
+```
+
+```text
+product_detections
+        ↓
+개별 제품 생산 이력
+
+production_sessions
+        ↓
+작업자별 생산량 집계
+```
+
+##### alerts — 알림
+
+생산 과정 및 시스템에서 발생하는 정보, 경고, 오류의 이력을 관리한다.
+
+```text
+컬럼	설명
+alert_id	알림 번호
+session_id	관련 생산 작업 번호
+component_id	관련 시스템 구성요소 번호
+product_detection_id	관련 제품 감지 번호
+checked_by_user_id	알림을 확인한 사용자 번호
+alert_type	알림 유형
+priority	중요도
+error_code	오류 코드
+recovery_status	복구 상태
+check_status	확인 상태
+alert_message	알림 상세 내용
+created_at	발생 일시
+recovered_at	복구 일시
+checked_at	확인 일시
+```
+
+알림 유형은 다음과 같다.
+
+```text
+INFO
+WARNING
+ERROR
+```
+
+중요도는 다음과 같이 관리한다.
+
+```text
+LOW
+MEDIUM
+HIGH
+```
+```text
+복구 상태:
+
+NOT_RECOVERED : 미복구
+RECOVERED     : 복구 완료
+
+확인 상태:
+
+UNCHECKED : 미확인
+CHECKED   : 확인 완료
+
+INFO 유형의 알림은 복구 또는 확인 대상이 아닌 경우 관련 상태 및 시간값을 NULL로 사용할 수 있다.
+
+오류 코드는 장비 및 시스템 오류 종류를 식별하기 위해 사용한다.
+
+예:
+
+CAMERA_ERROR
+NO_DETECTION
+SERIAL_DISCONNECTED
+```
+
+주요 규칙은 다음과 같다.
+
+```text
+- RECOVERED 상태가 되면 recovered_at을 기록한다.
+- 미복구 상태에서는 recovered_at을 NULL로 유지한다.
+- 사용자가 알림을 확인하면 checked_by_user_id와 checked_at을 기록한다.
+- 자동 생성된 장비 알림은 해당 구성요소가 정상 상태로 복구되면 자동으로 RECOVERED 처리할 수 있다.
+- 수동으로 생성된 알림은 자동 복구 대상에서 제외한다.
+- 동일 구성요소와 동일 오류 코드의 미복구 알림은 중복 생성하지 않는다.
+```
+
+#### 2.5.3 테이블 관계
+
+각 테이블의 관계는 다음과 같다.
+
+```text
+부모 테이블	자식 테이블	관계	자식 FK
+users	production_sessions	1:N	NOT NULL
+production_sessions	product_detections	1:N	NOT NULL
+product_types	product_detections	1:N	NULL 가능
+production_sessions	alerts	1:N	NULL 가능
+system_components	alerts	1:N	NULL 가능
+product_detections	alerts	1:N	NULL 가능
+users	alerts	1:N	NULL 가능
+
+production_targets는 하루 전체 목표를 독립적으로 관리하기 때문에 다른 테이블과 직접적인 외래키 관계를 가지지 않는다.
+
+전체 관계를 간단하게 표현하면 다음과 같다.
+
+                    production_targets
+                           │
+                           │ 목표 분배
+                           ▼
+users ──────── 1:N ─── production_sessions
+                           │
+                           │ 1:N
+                           ▼
+                    product_detections
+                           │
+                           │ N:1
+                           ▼
+                     product_types
+```
+
+```text
+system_components ── 1:N ──┐
+                            │
+users ─────────── 1:N ──────┤
+                            ▼
+production_sessions ─ 1:N → alerts
+                            ▲
+product_detections ─ 1:N ──┘
+```
+
+
+#### 2.5.4 생산 목표 및 세션 관리
+
+생산 목표는 하루 전체 목표와 작업자별 목표를 구분하여 관리한다.
+
+```text
+[production_targets]
+
+하루 전체 생산 목표
+        │
+        ↓
+daily_worker_count
+작업 인원 확인
+        │
+        ↓
+작업자별 목표 분배
+        │
+        ↓
+[production_sessions]
+세션별 목표 저장
+        │
+        ↓
+제품 생산
+```
+
+예를 들어 하루 초콜릿 목표가 100세트이고 작업자가 2명이라면 작업자별 생산 세션에 목표를 분배하여 저장한다.
+
+```text
+> 하루 목표
+
+초콜릿 100세트
+사탕 50세트
+
+        ↓
+
+작업자 2명
+
+        ↓
+
+작업자 A
+초콜릿 50세트
+사탕 25세트
+
+작업자 B
+초콜릿 50세트
+사탕 25세트
+```
+
+각 생산 세션은 작업 시작 당시의 목표를 별도로 저장하기 때문에 이후 전체 목표가 변경되더라도 이미 시작된 생산 작업의 목표값을 유지할 수 있다.
+
+
+#### 2.5.5 제품 감지 및 생산량 처리
+
+제품이 컨베이어를 따라 이동하면 적외선 센서가 제품을 감지한다.
+
+```text
 제품 투입
    ↓
 적외선 센서 감지
    ↓
 카메라 촬영
    ↓
-이미지 전달
+이미지 처리
    ↓
-FastAPI 서버
+초콜릿 / 사탕 분류
    ↓
-OpenCV 이미지 처리
+product_detections 저장
    ↓
-제품 분류
-   ↓
-초콜릿 / 사탕 판별
-   ↓
-분류 결과 반환
-   ↓
-분류 장치 제어
-   ↓
-생산량 증가
-   ↓
-DB 저장
-   ↓
-LCD 및 관리자 Web에 결과 표시
+production_sessions 생산량 증가
 ```
 
-### 2.7.5 박스 적재 및 완료 처리
-
-제품이 분류된 후 각각의 제품은 지정된 포장 위치로 이동한다.
-
-초콜릿은 10개를 하나의 세트로 관리하며, 사탕은 1개를 하나의 세트로 관리한다.
-
-예를 들어 초콜릿 생산량이 10개에 도달하면 초콜릿 1세트가 완료된 것으로 처리한다.
+정상적으로 분류된 제품은 product_detections에 저장하고, 제품 유형에 따라 해당 생산 세션의 생산량을 증가시킨다.
 
 ```text
-초콜릿
+CHOCOLATE
+→ chocolate_count + 1
 
-제품 1
-제품 2
-제품 3
-...
-제품 10
+CANDY
+→ candy_count + 1
+
+세트 수는 product_types.unit_per_set을 기준으로 계산한다.
+
+초콜릿
+10개 = 1세트
+
+사탕
+1개 = 1세트
+```
+
+따라서 제품별 생산량을 직접 세트 수로 저장하지 않고 실제 생산된 낱개 수를 기준으로 관리한다.
+
+#### 2.5.6 박스 적재 및 완료 처리
+
+제품의 세트 구성 기준은 product_types.unit_per_set에서 관리한다.
+
+초콜릿은 다음과 같이 처리한다.
+
+```text
+초콜릿 1개
+   ↓
+생산량 +1
+   ↓
+현재 박스 수량 확인
+   ↓
+10개 도달?
+   ↓
+YES
    ↓
 1세트 완료
    ↓
@@ -335,27 +683,212 @@ LCD 및 관리자 Web에 결과 표시
 박스 배출
    ↓
 LED / 부저 / LCD 알림
+   ↓
+다음 박스 생산 시작
 
-박스가 가득 찬 경우 작업자에게 박스 교체가 필요하다는 알림을 제공한다.
+> 초콜릿의 경우
+
+10개 = 1세트
+
+사탕의 경우:
+
+1개 = 1세트
 ```
 
-### 2.7.6 오류 및 알림 처리
+세트 구성 기준은 제품 유형 테이블에서 관리하기 때문에 생산 로직에서 제품별 수량을 직접 하드코딩하지 않도록 구성한다.
 
-시스템에서 오류가 발생하면 오류 유형과 발생 위치를 확인하고 ALERTS 테이블에 기록한다.
+박스 배출이 완료되면 현재 박스의 적재 수량을 초기화하고 다음 생산 작업을 진행한다.
 
-예를 들어 다음과 같은 오류가 발생할 수 있다.
+박스가 가득 찬 경우 작업자에게 박스 교체가 필요하다는 알림을 제공한다.
+
+#### 2.5.7 장비 상태 및 오류 처리
+
+시스템에서 사용하는 센서, 카메라, 컨베이어, 서보모터 등의 장비는 system_components에서 관리한다.
 
 ```text
-적외선 센서 오류
-카메라 연결 오류
-이미지 분류 실패
-컨베이어 오류
-서보모터 오류
-서버 연결 오류
-데이터베이스 연결 오류
-오류가 발생하면 작업자 화면에서는 LED와 부저를 이용하여 즉시 알림을 제공하고 LCD 화면에 오류 내용을 표시한다.
+system_components
+        │
+        ├── SENSOR
+        ├── ACTUATOR
+        ├── CONTROLLER
+        ├── DISPLAY
+        ├── SOFTWARE
+        ├── SERVER
+        └── DATABASE
+```
 
-관리자는 관리자 웹 페이지에서 발생한 오류의 종류, 발생 시간, 관련 장비 및 처리 상태를 확인할 수 있다.
+각 구성요소는 다음 상태 중 하나를 가진다.
+
+```text
+NORMAL
+WARNING
+ERROR
+OFFLINE
+```
+
+장비에 오류가 발생하면 해당 구성요소의 상태를 변경하고 alerts에 오류 이력을 저장한다.
+
+```text
+장비 오류 발생
+      ↓
+system_components.current_status 변경
+      ↓
+alerts 오류 이력 저장
+      ↓
+작업자 UI 알림
+      ↓
+LCD / LED / 부저 알림
+      ↓
+관리자 Web 표시
+```
+
+장비가 정상적으로 복구되면 구성요소 상태를 NORMAL로 변경하고 관련 자동 생성 알림을 RECOVERED로 처리할 수 있다.
+
+#### 2.5.8 알림 처리
+
+alerts는 생산 작업, 제품 감지, 시스템 구성요소와 독립적으로 연결될 수 있도록 설계하였다.
+
+따라서 다음과 같은 상황을 모두 저장할 수 있다.
+
+```text
+생산 작업 관련 알림
+        ↓
+production_sessions
+
+제품 분류 관련 알림
+        ↓
+product_detections
+
+장비 관련 알림
+        ↓
+system_components
+
+알림 확인 사용자
+        ↓
+users
+```
+
+모든 알림이 반드시 생산 작업 또는 제품과 관련되어야 하는 것은 아니므로 관련 외래키에는 NULL을 허용한다.
+
+예를 들어 서버 연결 오류와 같이 특정 제품이나 생산 작업과 관계없는 오류도 저장할 수 있다.
+
+```text
+SERVER_CONNECTION_ERROR
+
+session_id = NULL
+product_detection_id = NULL
+component_id = Backend Server
+```
+
+반대로 특정 제품의 분류 실패와 관련된 알림은 제품 감지 데이터와 연결할 수 있다.
+
+```text
+제품 분류 실패
+      ↓
+product_detections
+      ↓
+alerts
+```
+
+알림 확인이 완료되면 확인한 사용자와 확인 시간을 기록한다.
+
+```text
+alerts
+   ↓
+checked_by_user_id
+   ↓
+users
+```
+
+#### 2.5.9 데이터 처리 흐름
+
+전체 데이터 처리 과정은 다음과 같다.
+
+```text
+사용자 로그인
+    ↓
+production_targets 조회
+    ↓
+생산 작업 시작
+    ↓
+production_sessions 생성
+    ↓
+적외선 센서 제품 감지
+    ↓
+카메라 이미지 촬영
+    ↓
+FastAPI / OpenCV 이미지 처리
+    ↓
+제품 분류
+    ↓
+product_detections 저장
+    ↓
+생산량 증가
+    ↓
+production_sessions 갱신
+    ↓
+목표 수량 및 세트 수 확인
+    ↓
+박스 적재
+    ↓
+세트 완료 확인
+    ↓
+서보모터 박스 배출
+    ↓
+LCD / LED / 부저 알림
+    ↓
+관리자 Web에 생산 현황 표시
+```
+
+#### 2.5.10 IoT 데이터 처리 흐름
+
+IoT 장비에서 발생하는 데이터는 Backend를 중심으로 처리한다.
+
+```text
+IoT 장비
+   ↓
+적외선 센서
+   ↓
+제품 감지
+   ↓
+카메라 촬영
+   ↓
+이미지 데이터 전달
+   ↓
+FastAPI Server
+   ↓
+OpenCV 이미지 처리
+   ↓
+제품 분류
+   ↓
+분류 결과 반환
+   ↓
+ASP.NET Core Backend
+   ↓
+product_detections 저장
+   ↓
+production_sessions 생산량 갱신
+   ↓
+MySQL Database
+   ↓
+ ┌───────────────┐
+ │               │
+ ▼               ▼
+작업자 WPF     관리자 Web
+
+장비 상태 및 오류가 발생하는 경우 다음과 같이 처리한다.
+
+IoT 장비
+   ↓
+장비 상태 변화
+   ↓
+Backend
+   ↓
+system_components 상태 갱신
+   ↓
+alerts 이력 저장
+   ↓
+작업자 / 관리자 화면 표시
 ```
 
 ## 3. 개발환경 구축
@@ -1376,15 +1909,3 @@ LED / 부저 확인
 프로젝트 최종 시연영상 링크를 아래에 추가한다.
 
 [시연영상 링크]
-
-# 10. 프로젝트 결과
-
-```text
-본 프로젝트에서는 컨베이어벨트와 IoT 장비를 활용하여 초콜릿과 사탕을 자동으로 감지하고 분류하는 시스템을 구현하였다.
-
-적외선 센서를 이용한 제품 감지부터 카메라 촬영, OpenCV 기반 이미지 분류, 제품 자동 분류, 생산량 집계, 데이터베이스 저장까지의 전체 생산 과정을 자동화하였다.
-
-또한 작업자용 WPF UI와 관리자용 Web Dashboard를 구축하여 생산 현장의 작업자와 관리자가 각각 필요한 정보를 확인할 수 있도록 구성하였다.
-
-작업자는 현장에서 생산량과 장비 상태를 확인하고 컨베이어를 제어할 수 있으며, 관리자는 웹 페이지를 통해 생산 현황, 제품 분류 결과, 통계 및 오류 내역을 확인할 수 있다.
-```
